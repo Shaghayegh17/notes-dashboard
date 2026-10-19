@@ -1,31 +1,39 @@
 import { useEffect, useRef, useState } from "react";
 
-let notes = JSON.parse(localStorage.getItem("notes"))|| [];
-const  saveNotes = ()=>{
-    localStorage.setItem("notes",JSON.stringify(notes))}
-
 export function Dashboard() {
-  const inputRef = useRef(null);
   const [input, setInput] = useState("");
-  const [notes,setNotes]=useState([])
+  const [userNotes, setUserNotes] = useState([]);
+
+  const inputRef = useRef(null);
+
   const handleChange = (e) => {
     setInput(e.target.value);
   };
   const handleFocus = () => {
     inputRef.current.focus();
   };
-  useEffect(() => handleFocus
- , saveNotes,[notes]);
+  const handleAdd = () => {
+    setUserNotes([...userNotes, input]);
+    setInput("");
+    handleFocus();
+  };
+
+  useEffect(() => {
+    handleFocus();
+    console.log("اجرا شد");
+  }, []);
+  console.log(userNotes);
+  // useEffect(() => saveNotes(), [note]);
   return (
     <div>
       <input type="text" ref={inputRef} value={input} onChange={handleChange} />
+      <button onClick={handleAdd}>اضافه کردن به لیست</button>
+
       <ul>
-        {notes
-        .push(input)
-        .map((note) => <li key={note}>{note}</li>)
-        .join("")}
+        {userNotes.map((notesitem) => (
+          <li key={notesitem}>{notesitem}</li>
+        ))}
       </ul>
-      
     </div>
   );
 }
