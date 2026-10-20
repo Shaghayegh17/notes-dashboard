@@ -2,7 +2,14 @@ import { useEffect, useRef, useState } from "react";
 
 export function Dashboard() {
   const [input, setInput] = useState("");
-  const [userNotes, setUserNotes] = useState([]);
+  const [userNotes, setUserNotes] = useState(
+    () => JSON.parse(localStorage.getItem("userNotes")) || [],
+  );
+  const [count,setCount]=useState(0)
+  
+  const saveChanges = () => {
+    localStorage.setItem("userNotes", JSON.stringify(userNotes));
+  };
 
   const inputRef = useRef(null);
 
@@ -14,16 +21,18 @@ export function Dashboard() {
   };
   const handleAdd = () => {
     setUserNotes([...userNotes, input]);
+
     setInput("");
     handleFocus();
   };
-
+  // مخصوص لود شدن
   useEffect(() => {
     handleFocus();
-    console.log("اجرا شد");
   }, []);
-  console.log(userNotes);
-  // useEffect(() => saveNotes(), [note]);
+
+  useEffect(() => {
+    (saveChanges(), [userNotes]);
+  });
   return (
     <div>
       <input type="text" ref={inputRef} value={input} onChange={handleChange} />
