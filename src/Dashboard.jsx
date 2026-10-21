@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react";
 
 export function Dashboard() {
   const [input, setInput] = useState("");
+
   const [userNotes, setUserNotes] = useState(
     () => JSON.parse(localStorage.getItem("userNotes")) || [],
   );
-  const [count,setCount]=useState(0)
-  
+
   const saveChanges = () => {
     localStorage.setItem("userNotes", JSON.stringify(userNotes));
   };
@@ -25,18 +25,19 @@ export function Dashboard() {
     setInput("");
     handleFocus();
   };
-  // مخصوص لود شدن
+  // مخصوص لود شدن فوکس اولیه
   useEffect(() => {
     handleFocus();
   }, []);
 
   useEffect(() => {
-    (saveChanges(), [userNotes]);
-  });
+    saveChanges();
+  }, [userNotes]);
   return (
     <div>
       <input type="text" ref={inputRef} value={input} onChange={handleChange} />
       <button onClick={handleAdd}>اضافه کردن به لیست</button>
+      <p>تعداد یادداشت ها: {userNotes.length}</p>
 
       <ul>
         {userNotes.map((notesitem) => (
