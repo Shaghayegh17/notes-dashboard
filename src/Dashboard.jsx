@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 export function Dashboard() {
   const [input, setInput] = useState("");
+  const [warningText, setWarningText] = useState("");
 
   const [userNotes, setUserNotes] = useState(
     () => JSON.parse(localStorage.getItem("userNotes")) || [],
@@ -20,10 +21,14 @@ export function Dashboard() {
     inputRef.current.focus();
   };
   const handleAdd = () => {
-    setUserNotes([...userNotes, input]);
-
-    setInput("");
-    handleFocus();
+    if (input.trim() !== "") {
+      setUserNotes([...userNotes, input]);
+      setWarningText("");
+      setInput("");
+      handleFocus();
+    } else {
+      setWarningText("محتوا نباید خالی باشد");
+    }
   };
   // مخصوص لود شدن فوکس اولیه
   useEffect(() => {
@@ -38,6 +43,7 @@ export function Dashboard() {
       <input type="text" ref={inputRef} value={input} onChange={handleChange} />
       <button onClick={handleAdd}>اضافه کردن به لیست</button>
       <p>تعداد یادداشت ها: {userNotes.length}</p>
+      {warningText && <p>{warningText}</p>}
 
       <ul>
         {userNotes.map((notesitem) => (
