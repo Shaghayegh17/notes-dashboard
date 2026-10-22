@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from "react";
 
 export function Dashboard() {
   const [input, setInput] = useState("");
+  const inputRef = useRef(null);
+  const countRef = useRef(0);
+  countRef.current += 1;
 
   const [warningText, setWarningText] = useState("");
 
@@ -13,8 +16,6 @@ export function Dashboard() {
     localStorage.setItem("userNotes", JSON.stringify(userNotes));
   };
 
-  const inputRef = useRef(null);
-
   const handleChange = (e) => {
     setInput(e.target.value);
     setWarningText("");
@@ -25,7 +26,7 @@ export function Dashboard() {
   const handleAdd = () => {
     if (input.trim() !== "") {
       const id = crypto.randomUUID();
-      setUserNotes([...userNotes, { Id: id, input: input.trim() }]);
+      setUserNotes([...userNotes, { id: id, input: input.trim() }]);
       setWarningText("");
       setInput("");
     } else {
@@ -47,10 +48,11 @@ export function Dashboard() {
       <button onClick={handleAdd}>اضافه کردن به لیست</button>
       <p>تعداد یادداشت ها: {userNotes.length}</p>
       {warningText && <p>{warningText}</p>}
+      <p>تعداد رندرهای صفحه:{countRef.current}</p>
 
       <ul>
         {userNotes.map((notesitem) => (
-          <li key={notesitem.Id}>{notesitem.input}</li>
+          <li key={notesitem.id}>{notesitem.input}</li>
         ))}
       </ul>
     </div>
