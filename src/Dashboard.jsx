@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 export function Dashboard() {
   const [input, setInput] = useState("");
+
   const [warningText, setWarningText] = useState("");
 
   const [userNotes, setUserNotes] = useState(
@@ -16,19 +17,21 @@ export function Dashboard() {
 
   const handleChange = (e) => {
     setInput(e.target.value);
+    setWarningText("");
   };
   const handleFocus = () => {
     inputRef.current.focus();
   };
   const handleAdd = () => {
     if (input.trim() !== "") {
-      setUserNotes([...userNotes, input]);
+      const id = crypto.randomUUID();
+      setUserNotes([...userNotes, { Id: id, input: input.trim() }]);
       setWarningText("");
       setInput("");
-      handleFocus();
     } else {
       setWarningText("محتوا نباید خالی باشد");
     }
+    handleFocus();
   };
   // مخصوص لود شدن فوکس اولیه
   useEffect(() => {
@@ -47,7 +50,7 @@ export function Dashboard() {
 
       <ul>
         {userNotes.map((notesitem) => (
-          <li key={notesitem}>{notesitem}</li>
+          <li key={notesitem.Id}>{notesitem.input}</li>
         ))}
       </ul>
     </div>
