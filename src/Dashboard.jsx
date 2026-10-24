@@ -44,6 +44,7 @@ export function Dashboard() {
   }, [userNotes]);
   return (
     <div>
+      <h2>نمایش حساب کاربری</h2>
       <input type="text" ref={inputRef} value={input} onChange={handleChange} />
       <button onClick={handleAdd}>اضافه کردن به لیست</button>
       <p>تعداد یادداشت ها: {userNotes.length}</p>
@@ -58,3 +59,36 @@ export function Dashboard() {
     </div>
   );
 }
+
+function withAuth(Components) {
+  return function NewComponents(props) {
+    const [isLogin, setIsLogin] = useState(
+      () => JSON.parse(localStorage.getItem("isLogin")) || false,
+    );
+    const saveLoginState = () => {
+      localStorage.setItem("isLogin", JSON.stringify(isLogin));
+    };
+    const handleEnter = () => {
+      setIsLogin(true);
+    };
+    useEffect(() => {
+      saveLoginState();
+    }, [isLogin]);
+    if (isLogin === true) {
+      return (
+        <>
+          <Components {...props} />
+        </>
+      );
+    }
+
+    return (
+      <div>
+        <h1>لطفا وارد شوید</h1>
+        <button onClick={handleEnter}>Enter</button>
+      </div>
+    );
+  };
+}
+
+export const DashboardWithAuth = withAuth(Dashboard);
